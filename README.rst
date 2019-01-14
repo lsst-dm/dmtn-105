@@ -1,7 +1,7 @@
 .. image:: https://img.shields.io/badge/dmtn--105-lsst.io-brightgreen.svg
    :target: https://dmtn-105.lsst.io
-.. image:: https://travis-ci.org/lsst-dm/dmtn-105.svg
-   :target: https://travis-ci.org/lsst-dm/dmtn-105
+.. image:: https://travis-ci.com/lsst-dm/dmtn-105.svg
+   :target: https://travis-ci.com/lsst-dm/dmtn-105
 ..
   Uncomment this section and modify the DOI strings to include a Zenodo DOI badge in the README
   .. image:: https://zenodo.org/badge/doi/10.5281/zenodo.#####.svg
@@ -21,7 +21,7 @@ Narrative summary of the LSST Science Platform capabilities that will be availab
 - Publication URL: https://dmtn-105.lsst.io
 - Alternative editions: https://dmtn-105.lsst.io/v
 - GitHub repository: https://github.com/lsst-dm/dmtn-105
-- Build system: https://travis-ci.org/lsst-dm/dmtn-105
+- Build system: https://travis-ci.com/lsst-dm/dmtn-105
 
 
 Build this technical note
