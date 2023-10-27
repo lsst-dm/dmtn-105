@@ -8,13 +8,13 @@
      :target: http://dx.doi.org/10.5281/zenodo.#####
 
 ################################################################
-LSP Capabilities for AuxTel, Commissioning, and Early Operations
+RSP Capabilities for AuxTel, Commissioning, and Early Operations
 ################################################################
 
 DMTN-105
 ========
 
-Narrative summary of the LSST Science Platform capabilities that will be available during the remainder of Construction and,
+Narrative summary of the Rubin Science Platform capabilities that will be available during the remainder of Construction and,
 specifically, for AuxTel commissioning, main telescope commissioning with ComCam and with the full camera,
 and for any early data releases prior to the start of formal operations.
 
