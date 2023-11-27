@@ -64,6 +64,9 @@ This isn't intended as a public-facing name -- as it is also not a public-facing
 Background and Motivation
 =========================
 
+**Mission statement:** The principal aim of "Prompt Products Preview" is the commissioning of the mechanisms
+required to make the Prompt Products available to science users once survey operations begin.
+
 During LSST survey operations, a variety of image and catalog data products produced by the Alert Production system are provided to end users through the Rubin Science Platform on timescales from 24-80 hours.
 This release process is comparable to annual data releases but must execute in an automated and continuous manner.
 Several pre-operations exercises (DP0.1, DP0.2, and DP0.3) have provided opportunities to rehearse the annual data release process, but we have not yet developed the infrastructure and processes to support real-time release.
@@ -82,8 +85,15 @@ Prompt Processing payloads are now running image processing pipelines on LATISS 
 At this time there is no plan to release commissioning-era AuxTel imaging data or alerts publicly to science users or to alert brokers, so access to these products will be restricted to project members and SITCOM in-kind contributors.
 
 
-Data Sources and Datasets
-=========================
+Data Sources
+============
+
+To avoid the risk of rapid obsolescence, we avoid mentioning the dates of the various upcoming stages of
+data acquisition and release here.
+These dates are more authoritatively addressed in RTN-011.
+
+AuxTel/LATISS
+-------------
 
 Initially the data available for use with "PP Preview" will be AuxTel/LATISS data taken on the Summit.
 
@@ -93,20 +103,90 @@ An observing run with AuxTel is currently done approximately every two weeks.
 While over half of the time is devoted to spectroscopy, it appears that imaging data are still being taken on a regular basis.
 Imaging and spectroscopic data may be separated readily on the filter ID, which has a distinctive "grism" value for the latter.
 
-The aim is to shortly be in the position to perform some level of automated, AP-like, processing of all imaging data taken, regardless of whether templates are available or not for the section of sky being observed.
-This processing will always produce a PVI/``calexp``, as well as a ``src`` table (in ``afw.table`` FITS-file form in the Butler repository).
-The ``src`` table will almost certainly not be ingested into a database.
-Note that there are ongoing discussions about whether the ``src`` outputs should be made available to users, during the first year of operations, before DR1 is available; the long-term baseline, however, remains that they will ultimately *not* be available to science users.
+AuxTel imaging data is the primary initial target of "PP Preview".
+
+ComCam
+------
+
+Since it now appears likely, though not yet certain, that the initial commissioning of the main telescope
+will use ComCam after all, this will become a key target for "PP Preview" processing, with a goal of having
+a suitable data flow from data acquisition through RSP access in place as early as possible in the ComCam
+data acquisition era.
+
+Delivery of AuxTel imaging data through "PP Preview" will continue into the ComCam era and will provide valuable
+practice in working with multiple datasets.
+
+While existing RSP tooling is usable for the display of a ComCam array's worth of images -- 9 CCDs -- at once,
+that will not be the case for LSSTCam.
+Therefore, one aim of the ComCam era of "PP Preview" should be to exercise tooling for visualization of
+focal-plane arrays of data in a way that *will* scale to LSSTCam, even though it may not be strictly
+needed on this time scale.
+This is briefly discussed further below, but the planned work in this area is yet to be defined in detail.
+
+LSSTCam
+-------
+
+Once commissioning switches to LSSTCam, we anticipate continuing "PP Preview" service as soon as possible.
+This will depend on successfully scaling up all the processing and data service elements to the new load.
+Commissioning a user-facing full-focal-plane display capability will be a key goal of this period in
+addition to all of the pure scaling issues that will be involved.
+
+As noted elsewhere, "PP Preview" service of LSSTCam to staff is in addition to and in parallel with
+any Data Preview 1 service of a limited set of commissioning data to users.
+
+
+Data Processing and Data Products
+=================================
+
+The aim is to always be in the position to perform some level of automated, AP-like, processing of all imaging data taken, regardless of whether templates are available or not for the section of sky being observed.
+This processing will, at a minimum, always produce a PVI/``calexp`` for each detector image.
 
 If templates are available, the processing will also produce a difference image,
 and associated DIA catalog content (``DiaSource``, ``DiaObject``, etc.) that begins in the APDB and is migrated to the PPDB for user access.
+(In early versions of this, before the APDB migrates to Cassandra, there will be no separate PPDB,
+and "PP Preview" catalog data may be served directly from the APDB.)
 
-The ability to do all the above in an automated way has been deployed in Summer 2023 work.
+The ability to do all the above in an automated way, at LATISS scale, has already been deployed in Summer 2023 work.
 
-Note that at some point the spectroscopic data may be run through an AP-like pipeline, up through the ISR stage, and these results would be readily made available through the "PP Preview" system as well.
+When template images become available for use in the AP pipeline, the logic of consistency and availability
+of provenance suggests that they must also become available via "PP Preview".
 
-Whether this would be applied to the actual spectroscopic reductions,
-or to any resulting atmospheric model updates, remains to be determined.
+
+Source-like Data
+----------------
+
+As part of its normal operation, the AP pipeline payload also produces a ``src`` table in ``afw.table`` FITS-file form in the Butler repository.
+These outputs are not closely equivalent to the DRP ``Source`` outputs,
+either in source selection or in computed attributes.
+
+*(Add text from EB summarizing what's different?)*
+
+In the original LSST plan these outputs were not planned to be made available to science users.
+However, there are now ongoing discussions about whether the content of the ``src`` outputs should be
+made available to users in some way, during the first year of operations, before DR1 is available
+(one year following the start of survey operations).
+Otherwise, users would not receive any catalog-like data on the static sky before that time.
+The long-term baseline, however, remains that they will ultimately *not* be available to science users.
+
+As the project's thinking about this option evolves, we will want to take this into account in "PP Preview".
+
+If ``src``-like data are made available to science users, the following constraints will likely apply:
+
+* They will be a subset both in rows and columns of what the full ``Source`` table will contain in a Data Release.
+* They will be provided in a Parquet form following the application of some level of "SDM Standardization"-like processing.
+* They will be accessed via the Notebook Aspect as a Butler dataset, with the same DataID of a CCD visit image.
+
+Other considerations will be discussed below.
+
+
+Spectroscopic Data
+------------------
+
+At some point the AuxTel/LATISS spectroscopic data may be run through an AP-like pipeline,
+up through the ISR stage,
+and these results would be readily made available through the "PP Preview" system as well.
+Whether this will actually be done is TBD, and whether the actual spectroscopic reduction outputs, or
+any resulting atmospheric model updates, would be available via "PP Preview" remains to be determined as well.
 
 
 Data Access
@@ -118,10 +198,11 @@ This section covers the ways in which data from the processing above would be ma
 Overview
 --------
 
-The AuxTel processing above is meant to be made available in the RSP in a way which progressively
-approaches exactly how LSSTCam Prompt Products will be made available to science users during operations:
-we will follow the model where data are available as uniformly as possible across the API, Notebook,
-and Portal Aspects.
+The AuxTel and subsequent processed datasets described above are meant to be made available in the RSP
+in a way which progressively
+approaches exactly how LSSTCam Prompt Products will be made available to science users during operations.
+That is, we will follow the Science Platform Vision's model where data are available as uniformly as
+possible across the API, Notebook, and Portal Aspects.
 
 Butler Access
 -------------
