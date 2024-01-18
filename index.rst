@@ -71,19 +71,67 @@ During LSST survey operations, a variety of image and catalog data products prod
 This release process is comparable to annual data releases but must execute in an automated and continuous manner.
 Several pre-operations exercises (DP0.1, DP0.2, and DP0.3) have provided opportunities to rehearse the annual data release process, but we have not yet developed the infrastructure and processes to support real-time release.
 
-Alert Production and alert distribution are expected to begin relatively soon after the System First Light milestone (see RTN-061).
-It is therefore necessary to understand what Rubin Science Platform support will be provided for these data products at that time, and to develop and exercise the associated data release procedures now, prior to the beginning of LSSTCam commissioning.
-There are planned capabilities with some complexity, such as the management of a 30-day cache of uncompressed (or losslessly compressed) PVIs and difference images from AP, and (possibly) the replacement of the PVIs with lossy-compressed versions.
+Alert Production and tests of alert distribution are expected to begin relatively soon after the System First Light milestone (see RTN-061).
+It is therefore necessary to understand what Rubin Science Platform support will be provided for these data products at that time, and to develop and exercise the associated data release procedures now, prior to the beginning of ComCam and LSSTCam commissioning.
+There are planned capabilities of the operations-era system with some complexity, such as the management of a 30-day cache of uncompressed (or losslessly compressed) PVIs and difference images from AP, and (possibly) the replacement of the PVIs with lossy-compressed versions.
 We have to devise a system that works in the context of the transfer, around the 80-hour mark, of images from the "embargo" systems to the externally visible ones.
-We also have to manage in a clean way the communication to users of the fact that some observations have templates available, and therefore yield difference images and DIA catalog data, while others will not, as well as the progressive increase in the proportion of sky covered by templates.
+We also have to manage in a clean way the communication to users of the fact that, during early operations,
+some observations will have templates available, and therefore yield difference images and DIA catalog data, while others will not.
+We also must communicate the progressive increase in the proportion of sky covered by templates.
 
-We would also like to exercise some basic user-communication goals such as "where did LSSTCam look last night?", and the like.
+We would also like the system to meet some basic user-communication goals such as "where did LSSTCam look last night?", and the like.
 
 The AuxTel LATISS imaging surveys provide a useful integration target for continuous release of data products produced by Alert Production.
 Prompt Processing payloads are now running image processing pipelines on LATISS data in real-time, replicating the interfaces that will exist with LSSTCam at lower data volumes.
 
 At this time there is no plan to release commissioning-era AuxTel imaging data or alerts publicly to science users or to alert brokers, so access to these products will be restricted to project members and SITCOM in-kind contributors.
 
+
+Schedule
+========
+
+We are planning toward the following objectives:
+
+AP operations
+-------------
+
+* First day running AP against Cassandra is attempted - mid-February 2024
+* Successfully running AP against Cassandra on AuxTel data - mid-March 2024
+* First day to attempt replicating Cassandra to Postgres - beginning of March 2024
+* Stable running of AP on Cassandra on AuxTel data with replication to Postgres - end of March 2024
+
+There is comfortable schedule margin available for these activities up through the start of May
+if there are unexpected problems.
+
+* Implementation of automated post-embargo sweeps to ``/repo/prompt`` - (TBD)
+* Implementation of 30-day cache purges - TBC if this will even be done in early operations
+  
+
+Data services
+-------------
+
+* Exposure of ``/repo/embargo`` images via image services - prototype currently running
+* Exposure of the expected user-facing image data products from ``/repo/prompt`` via image service - (TBD)
+* Exposure of the PPDB tables from Postgres via TAP - April 2024 or as soon thereafter as the actual data are available
+
+Is this the same Postgres server and the same TAP service as the one serving ``/repo/embargo`` ObsCore?
+
+Notebook Aspect
+---------------
+
+* USDF RSP Nublado services are already in place
+* Some work may still be needed on configuring appropriate "short names" for Prompt Products data sources
+* Main effort will probably be to develop demonstration / tutorial notebooks to exercise
+  realistic science-user data access use cases on the released data
+
+Portal Aspect
+-------------
+
+* Basic Portal is available in USDF RSP now
+* Configuration tweaks are needed soon to shift focus from DP0.2/DC2 universe to the real universe
+* Refreshed Portal UI deployed on integration clusters by end of February, production by mid-April 2024
+* "Simplified query" screens aimed at PP use cases - April 2024
+  
 
 Data Sources
 ============
@@ -108,10 +156,10 @@ AuxTel imaging data is the primary initial target of "PP Preview".
 ComCam
 ------
 
-Since it now appears likely, though not yet certain, that the initial commissioning of the main telescope
-will use ComCam after all, this will become a key target for "PP Preview" processing, with a goal of having
-a suitable data flow from data acquisition through RSP access in place as early as possible in the ComCam
-data acquisition era.
+Since it now appears likely that the initial commissioning of the main telescope will use ComCam after all,
+this will become a key target for "PP Preview" processing,
+with a goal of having a suitable data flow from data acquisition through RSP access in place as early as
+possible in the ComCam data acquisition era.
 
 Delivery of AuxTel imaging data through "PP Preview" will continue into the ComCam era and will provide valuable
 practice in working with multiple datasets.
@@ -144,9 +192,9 @@ This processing will, at a minimum, always produce a PVI/``calexp`` for each det
 If templates are available, the processing will also produce a difference image,
 and associated DIA catalog content (``DiaSource``, ``DiaObject``, etc.) that begins in the APDB and is migrated to the PPDB for user access.
 (In early versions of this, before the APDB migrates to Cassandra, there will be no separate PPDB,
-and "PP Preview" catalog data may be served directly from the APDB.)
+and "PP Preview" catalog data might be served directly from the APDB.)
 
-The ability to do all the above in an automated way, at LATISS scale, has already been deployed in Summer 2023 work.
+The ability to do this data processing in an automated way, at LATISS scale, has already been exercised in recent work.
 
 When template images become available for use in the AP pipeline, the logic of consistency and availability
 of provenance suggests that they must also become available via "PP Preview".
@@ -157,7 +205,8 @@ Source-like Data
 
 As part of its normal operation, the AP pipeline payload also produces a ``src`` table in ``afw.table`` FITS-file form in the Butler repository.
 These outputs are not closely equivalent to the DRP ``Source`` outputs,
-either in source selection or in computed attributes.
+either in source selection or in computed attributes,
+as they are principally generated to support the calibration of the data.
 
 *(Add text from EB summarizing what's different?)*
 
@@ -201,7 +250,7 @@ Overview
 The AuxTel and subsequent processed datasets described above are meant to be made available in the RSP
 in a way which progressively
 approaches exactly how LSSTCam Prompt Products will be made available to science users during operations.
-That is, we will follow the Science Platform Vision's model where data are available as uniformly as
+This will follow the Science Platform Vision's model where data are available as uniformly as
 possible across the API, Notebook, and Portal Aspects.
 
 Butler Access
@@ -209,18 +258,24 @@ Butler Access
 
 What may evolve over the course of "PP Preview" is that early on access may be only through
 the ``/repo/embargo`` repository, while by the end of "PP Preview" we'll have to have the
-full "release from embargo to users at 80 hours" working, and therefore have a Butler
-available that represents the latter dataset.
+full "release from embargo to (staff) users at 80 hours" working, and therefore have the Butler
+that represents the latter dataset, ``/repo/prompt``, available in the RSP.
 
 
-RSP Data Services
------------------
+RSP Data Services (API Aspect)
+------------------------------
 
 
 Image Data
 ^^^^^^^^^^
 
-In addition to the TAP access to ObsCore image metadata,
+As in DP0.2, image data access through the API Aspect depends on several elements:
+
+* ObsCore image metadata queries via TAP
+* A DataLink "links service" endpoint to connect image dataset IDs from ObsCore queries
+* Image-retrieval signed URLs for the actual image access, returned from the "links service"
+* An image-cutout service pointed to by metadata from the "links service"
+
 
 CAOM2 metadata
 """"""""""""""
