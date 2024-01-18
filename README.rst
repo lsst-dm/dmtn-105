@@ -1,27 +1,29 @@
 .. image:: https://img.shields.io/badge/dmtn--105-lsst.io-brightgreen.svg
    :target: https://dmtn-105.lsst.io
-.. image:: https://travis-ci.com/lsst-dm/dmtn-105.svg
-   :target: https://travis-ci.com/lsst-dm/dmtn-105
+.. image:: https://github.com/lsst-dm/dmtn-105/workflows/CI/badge.svg
+   :target: https://github.com/lsst-dm/dmtn-105/actions/
 ..
   Uncomment this section and modify the DOI strings to include a Zenodo DOI badge in the README
   .. image:: https://zenodo.org/badge/doi/10.5281/zenodo.#####.svg
      :target: http://dx.doi.org/10.5281/zenodo.#####
 
 ################################################################
-LSP Capabilities for AuxTel, Commissioning, and Early Operations
+RSP Capabilities for AuxTel, Commissioning, and Early Operations
 ################################################################
 
 DMTN-105
 ========
 
-Narrative summary of the LSST Science Platform capabilities that will be available during the remainder of Construction (FY19+) and, specifically, for initial AuxTel commissioning, main telescope commissioning with ComCam and with the full camera, and for any early data releases prior to the start of formal operations.
+Narrative summary of the Rubin Science Platform capabilities that will be available during the remainder of Construction and,
+specifically, for AuxTel commissioning, main telescope commissioning with ComCam and with the full camera,
+and for any early data releases prior to the start of formal operations.
 
 **Links:**
 
 - Publication URL: https://dmtn-105.lsst.io
 - Alternative editions: https://dmtn-105.lsst.io/v
 - GitHub repository: https://github.com/lsst-dm/dmtn-105
-- Build system: https://travis-ci.com/lsst-dm/dmtn-105
+- Build system: https://github.com/lsst-dm/dmtn-105/actions
 
 
 Build this technical note
@@ -52,7 +54,7 @@ The `DM reStructuredText Style Guide`_ is a good resource for how we write reStr
 Remember that images and other types of assets should be stored in the ``_static/`` directory of this repository.
 See ``_static/README.rst`` for more information.
 
-The published technote at https://dmtn-105.lsst.io will be automatically rebuilt whenever you push your changes to the ``master`` branch on `GitHub <https://github.com/lsst-dm/dmtn-105>`_.
+The published technote at https://dmtn-105.lsst.io will be automatically rebuilt whenever you push your changes to the ``main`` branch on `GitHub <https://github.com/lsst-dm/dmtn-105>`_.
 
 Updating metadata
 =================
@@ -73,7 +75,7 @@ Add new bibliography items to the ``local.bib`` file in the root directory (and 
 
 ****
 
-Copyright 2019 California Institute of Technology
+Copyright 2019,2023 California Institute of Technology
 
 This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
 
